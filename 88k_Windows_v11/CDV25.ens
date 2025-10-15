@@ -7,3 +7,16 @@ POP: MACRO(ra)
         ld ra,r30,0
         add r30,r30,4
      ENDMACRO
+
+
+LongCad:  PUSH(r1);             Guardamos direccion de retorno
+          ld r12, r30, 4;       Cargamos el puntero a la cadena parámetro, r12 <- mem(r30+4)
+          or r29, r0, r0;       Inicio el contador a cero
+ SIGUE:   ld.bu r2, r12, r0;    Cargo elemento apuntado por r12, r2 <- mem(r12)
+          cmp r7, r2, r0;       Vemos si se acaba la lista
+          bb1 eq, r7, FINLCAD;  Si se acaba, vamos a acabar la subrutina
+          addu r29, r29, 1;     sumamos uno al contador
+          addu r12, r12, 1;     avanzamos en el string
+          br SIGUE;             seguimos con la cadena
+ FINLCAD: POP(r1)
+          jmp(r1)
