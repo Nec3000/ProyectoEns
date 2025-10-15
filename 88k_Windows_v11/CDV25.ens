@@ -1,0 +1,9 @@
+PUSH: MACRO(ra)
+        sub r30,r30,4
+        st ra,r30,0
+      ENDMACRO
+
+POP: MACRO(ra)
+        ld ra,r30,0
+        add r30,r30,4
+     ENDMACRO
