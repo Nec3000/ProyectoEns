@@ -9,14 +9,32 @@ POP: MACRO(ra)
      ENDMACRO
 
 
-LongCad:  PUSH(r1);             Guardamos direccion de retorno
-          ld r12, r30, 4;       Cargamos el puntero a la cadena parámetro, r12 <- mem(r30+4)
-          or r29, r0, r0;       Inicio el contador a cero
- SIGUE:   ld.bu r2, r12, r0;    Cargo elemento apuntado por r12, r2 <- mem(r12)
-          cmp r7, r2, r0;       Vemos si se acaba la lista
-          bb1 eq, r7, FINLCAD;  Si se acaba, vamos a acabar la subrutina
-          addu r29, r29, 1;     sumamos uno al contador
-          addu r12, r12, 1;     avanzamos en el string
-          br SIGUE;             seguimos con la cadena
- FINLCAD: POP(r1)
-          jmp(r1)
+LongCad:       PUSH(r1);                        Guardamos direccion de retorno
+               ld r12, r30, 4;                  Cargamos el puntero a la cadena parámetro, r12 <- mem(r30+4)
+               or r29, r0, r0;                  Inicio el contador a cero
+ SIGUELCAD:    ld.bu r2, r12, r0;               Cargo elemento apuntado por r12, r2 <- mem(r12)
+               cmp r7, r2, r0;                  Vemos si se acaba la lista
+               bb1 eq, r7, FINLCAD;             Si se acaba, vamos a acabar la subrutina
+               addu r29, r29, 1;                Sumamos uno al contador
+               addu r12, r12, 1;                Avanzamos en el string
+               br SIGUELCAD;                    Seguimos con la cadena
+ FINLCAD:      POP(r1)
+               jmp(r1)
+
+
+CoincidenCad:  PUSH(r1)
+               ld r20, r31, 4;                  r20 <- Puntero a cadena1
+               ld r21, r31, 8;                  r20 <- Puntero a cadena2
+               or r29, r0, r0 ;                 Iniciamos contador
+               or r4, r0, r0;                   Iniciamos desplazamiento
+SIGUECOINCAD:  ld.bu r10, r20, r4;              Cargamos el caracter de cadena 1
+               ld.bu r11, r21, r4;              Cargamos el caracter de cadena 2
+               cmp r7, r10, r11;                Vemos si son iguales
+               bb1 ne, r7, FINCOINCAD;          Si no son iguales hemos acabado
+               cmp r7, r10, r0;                 Ya sabemos que son iguales, vemos si hemos acabado, con uno vale porque son iguales
+               bb1 eq, r7, FINCOINCAD;          Si ambos osn 0, hemos agotado ambas, y cubrimos también si ambas son vacías
+               add r29, r29, 1;                 Aumentamos contador
+               add r4, r4, 1;                   Aumentamos desplazamiento
+               br SIGUECOINCAD;                 Iteramos de nuevo
+FINCOINCAD:    POP(r1);
+               jmp(r1);
