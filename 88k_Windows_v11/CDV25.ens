@@ -7,7 +7,10 @@ POP: MACRO(ra)
         ld ra,r30,0
         add r30,r30,4
      ENDMACRO
-
+LEA: MACRO(ra,eti)
+	or ra,r0,low(eti)
+	or.u ra,ra,high(eti)
+     ENDMACRO
 
 LongCad:
         PUSH(r1);
@@ -65,10 +68,10 @@ BuscaCar:
 		
 
 ;
-; Debe incorporar este fichero con TODAS sus l�neas, sin modificar
+; Debe incorporar este fichero con TODAS sus l neas, sin modificar
 ; ninguna de ellas, al final de su archivo CDV24.ens
 ;
-; Este aviso se refiere tambi�n a las l�neas de comentario
+; Este aviso se refiere tambi n a las l neas de comentario
 ; 
 ;
 ;; Grupo:    230340 - Thu Oct 23 10:57:22 CEST 2025
@@ -98,7 +101,7 @@ BucBM:
 	PUSH (r28) 	    	; L
 	PUSH (r11)	    	; MAX
 
-	     		    	; Par�metros de BuscaCar
+	     		    	; Par metros de BuscaCar
 	PUSH (r27)	    	; P
 	PUSH (r10)	    	; REF
 	PUSH (r20)	   	; C
@@ -122,7 +125,7 @@ BucBM:
 	PUSH (r28)
 	PUSH (r27)
 	
-	PUSH (r14)		; Par�metros de CoincidenCad
+	PUSH (r14)		; Par metros de CoincidenCad
 	PUSH (r13)
 	bsr  CoincidenCad
 	POP  (r13)
@@ -134,9 +137,9 @@ BucBM:
 	POP  (r11)
 
 	cmp r5, r29, r28	; Comprueba si longitud > L
-	bb1 le, r5, contBM	; Si no lo es, contin�a
+	bb1 le, r5, contBM	; Si no lo es, contin a
 	cmp r5, r29, 255	; Comprueba si longitud > 255
-	bb1 le, r5, noLimBM	; Si no lo es, contin�a
+	bb1 le, r5, noLimBM	; Si no lo es, contin a
 	addu r29, r0, 255	; Si lo es, limita su valor a 255
 	
 noLimBM:
@@ -145,11 +148,11 @@ noLimBM:
 	st   r27, r12, r0	; actualiza P en *JJ
 	bb1 ge, r5, finBM	; Si coincidencia >= 255 termina
 contBM: 
-	addu r27, r27, 1	; Pasa al siguiente car�cter
+	addu r27, r27, 1	; Pasa al siguiente car cter
 	cmp  r5, r27, r11	; Es P>=max ?
 	bb1  hs, r5, finBM
 	
-	br   BucBM   		; Nueva b�squeda del primer car�cter
+	br   BucBM   		; Nueva b squeda del primer car cter
 
 finBM:
 	addu r29, r28, r0	; asigna L al valor de retorno r29
