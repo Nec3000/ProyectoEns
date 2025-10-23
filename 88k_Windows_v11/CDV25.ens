@@ -28,8 +28,8 @@ LongCad:
 
 CoincidenCad:
         PUSH(r1)
-        ld r20, r31, 4;                  r20 <- Puntero a cadena1
-        ld r21, r31, 8;                  r20 <- Puntero a cadena2
+        ld r20, r30, 4;                  r20 <- Puntero a cadena1
+        ld r21, r30, 8;                  r20 <- Puntero a cadena2
          or r29, r0, r0 ;                Iniciamos contador
         or r4, r0, r0;                   Iniciamos desplazamiento
 SIGUECOINCAD:
@@ -48,6 +48,21 @@ SIGUECOINCAD:
 FINCOINCAD:
         POP(r1);
         jmp(r1);
+
+
+BuscaCar:
+		PUSH(r1)
+		ld r14, r30, 4;					 r14 <- c, el caracter a buscar 
+		ld r20, r30, 8;					 r20 <- ref, puntero a inicio de la cadena
+		or r4, r0,r0;					 r4 <- Inicio contador de movimiento
+
+		ld r10, r30, 12;				 r10 <- from
+		ld r11, r30, 16;				 r10 <- to
+
+		addu r12, r20, r11;				 r12 <- ref[from], apunta a donde tenemos que empezar a buscar, es un puntero!!
+		addu r13, r20, r11;				 r13 <- ref[to], apunta a la posición en la que paramos, esta no se mira!!
+
+		
 
 ;
 ; Debe incorporar este fichero con TODAS sus l�neas, sin modificar
