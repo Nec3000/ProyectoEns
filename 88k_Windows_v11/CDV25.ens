@@ -7,6 +7,7 @@ POP: MACRO(ra)
         ld ra,r30,0
         add r30,r30,4
      ENDMACRO
+
 LEA: MACRO(ra,eti)
 	or ra,r0,low(eti)
 	or.u ra,ra,high(eti)
@@ -16,7 +17,7 @@ LongCad:
         PUSH(r1);
         ld r12, r30, 4;                  r12 <- Puntero a la cadena
         or r29, r0, r0;                  Inicio el contador a cero
- SIGUELCAD:
+SIGUELCAD:
         ld.bu r2, r12, r0;               Cargo elemento apuntado por r12, r2 <- mem(r12)
         cmp r7, r2, r0;                  Vemos si se acaba la lista
         bb1 eq, r7, FINLCAD;             Si se acaba, vamos a acabar la subrutina
@@ -24,8 +25,8 @@ LongCad:
         addu r29, r29, 1;                Sumamos uno al contador
         addu r12, r12, 1;                Avanzamos en el string
         br SIGUELCAD;                    Seguimos con la cadena
- FINLCAD:
-         POP(r1)
+FINLCAD:
+        POP(r1)
         jmp(r1)
 
 
@@ -33,7 +34,7 @@ CoincidenCad:
         PUSH(r1)
         ld r20, r30, 4;                  r20 <- Puntero a cadena1
         ld r21, r30, 8;                  r20 <- Puntero a cadena2
-         or r29, r0, r0 ;                Iniciamos contador
+        or r29, r0, r0 ;                 Iniciamos contador
         or r4, r0, r0;                   Iniciamos desplazamiento
 SIGUECOINCAD:
         ld.bu r10, r20, r4;              Cargamos caracter de cadena 1
