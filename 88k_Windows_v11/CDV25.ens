@@ -68,8 +68,8 @@ BuscaCar:
 		ld r10, r30, 12;				 r10 <- from
 		ld r11, r30, 16;				 r11 <- to
 
-		addu r12, r20, r10;				 r12 <- ref[from], apunta a donde tenemos que empezar a buscar, es un puntero!!
-		addu r13, r20, r11;				 r13 <- ref[to], apunta a la posición en la que paramos, esta no se mira!!
+		addu r12, r20, r10;				 r12 <- ref[from], apunta a donde tenemos que empezar a buscar
+		addu r13, r20, r11;				 r13 <- ref[to], apunta a la posición en la que paramos, esta no se mira, la ultima mirada es ref[to-1]
 
 SigueBusca:
 		ld.bu r2, r12, r29;				 Cargamos el char apuntado para comprobarlo
