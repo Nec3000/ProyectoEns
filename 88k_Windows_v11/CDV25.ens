@@ -1,20 +1,22 @@
 PUSH: MACRO(ra)
-        sub r30,r30,4
+        subu r30,r30,4
         st ra,r30,0
       ENDMACRO
 
 POP: MACRO(ra)
         ld ra,r30,0
-        add r30,r30,4
+        addu r30,r30,4
      ENDMACRO
 
 LEA: MACRO(ra,eti)
-	or ra,r0,low(eti)
-	or.u ra,ra,high(eti)
+	    or ra,r0,low(eti)
+	    or.u ra,ra,high(eti)
      ENDMACRO
 
 
-
+		org 0x8000
+C: 		data  "_"
+REF:    data    "AAAABBBBCCCCDDDDEEEE_Fin.__.\0"
 
 
 
@@ -77,7 +79,7 @@ SigueBusca:
 		bb1 eq, r7, FinBusca
 		
 		addu r4, r4, 1;					 Aumentamos desplazamiento
-		cmp r7 r12, r13;
+		cmp r7, r12, r13;
 		bb1 eq, r7, FinBusca;			 Si he llegado al final, acabo
 		br SigueBusca;
 FinBusca:
