@@ -93,7 +93,7 @@ FINCOINCAD:
 
 BuscaCar:
 		PUSH(r1);							NOTA TEMPORAL, REVISAR PORQUE NO HAY COMPROBACIÓN DE DATOS VÁLIDOS, ASUME QUE FROM <= TO.
-		ld r14, r30, 4;					 r14 <- c, el caracter a buscar 
+		ld r14, r30, 4;					 r14 <- c, el caracter a buscar
 		ld r20, r30, 8;					 r20 <- ref, puntero a inicio de la cadena
 		or r29, r0,r0;					 r4 <- Inicio contador de movimiento, porque quiero tener en cuenta cuanto me he movido
 
