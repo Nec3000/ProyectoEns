@@ -1,3 +1,7 @@
+LEA: MACRO(ra,eti)
+	    or ra,r0,low(eti)
+	    or.u ra,ra,high(eti)
+     ENDMACRO
 PUSH: MACRO(ra)
         subu r30,r30,4
         st ra,r30,0
@@ -16,12 +20,14 @@ LEA: MACRO(ra,eti)
 	    or.u ra,ra,high(eti)
      ENDMACRO
 
-	
+		org 0
+		br ppal
+
 		org 0x8000
 C: 		data  "_"
 REF:    data    "AAAABBBBCCCCDDDDEEEE_Fin.__.\0"
-from: data 4
-to: data 25
+from: 	data 4
+to:		data 25
 
 		org 0x8400
 ppal: 	or r30, r0, 0x9000
@@ -102,7 +108,7 @@ SigueBusca:
 		cmp r7, r2, r14;				 Veo si el apuntado es C
 		bb1 eq, r7, FinBusca
 		
-		addu r4, r4, 1;					 Aumentamos desplazamiento
+		addu r29, r29, 1;				 Aumentamos desplazamiento
 		cmp r7, r12, r13;
 		bb1 eq, r7, FinBusca;			 Si he llegado al final, acabo
 		br SigueBusca;
