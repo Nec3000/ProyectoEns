@@ -102,8 +102,10 @@ SigueBusca:
 		
 		addu r29, r29, 1;				 Aumentamos desplazamiento
 		cmp r7, r12, r13;
-		bb1 eq, r7, FinBusca;			 Si he llegado al final, acabo
+		bb1 eq, r7, NoEncontrado;			 Si he llegado al final, acabo
 		br SigueBusca;
+NoEncontrado:
+		or r29, r11, r0
 FinBusca:
 		POP(r1)
 		jmp(r1)
