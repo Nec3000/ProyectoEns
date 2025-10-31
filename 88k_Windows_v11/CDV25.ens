@@ -50,7 +50,7 @@ LongCad:
         ld r12, r30, 4;                  r12 <- Puntero a la cadena
         or r29, r0, r0;                  Inicio el contador a cero
 SIGUELCAD:
-        ld.bu r2, r12, r29;               Cargo elemento apuntado por r12, r2 <- mem(r12)
+        ld.bu r2, r12, r29;              Cargo elemento apuntado por r12, r2 <- mem(r12)
         cmp r7, r2, r0;                  Vemos si se acaba la lista
         bb1 eq, r7, FINLCAD;             Si se acaba, vamos a acabar la subrutina
 
@@ -73,8 +73,8 @@ CoincidenCad:
         ld r21, r30, 8;                  r20 <- Puntero a cadena2
         or r29, r0, r0 ;                 Iniciamos contador
 SIGUECOINCAD:
-        ld.bu r10, r20, r29;              Cargamos caracter de cadena 1
-        ld.bu r11, r21, r29;              Cargamos caracter de cadena 2
+        ld.bu r10, r20, r29;             Cargamos caracter de cadena 1
+        ld.bu r11, r21, r29;             Cargamos caracter de cadena 2
 
         cmp r7, r10, r11;                Vemos si son iguales
         bb1 ne, r7, FINCOINCAD;          Si no son iguales hemos acabado
@@ -116,6 +116,11 @@ FinBusca:
 		POP(r1)
 		jmp(r1)
 
+PoneBitA1:
+		PUSH(r1)
+		ld r20,r30,4
+		ld r15,r30,8
+		
 		
 
 ;
