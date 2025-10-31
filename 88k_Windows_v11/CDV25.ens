@@ -63,6 +63,10 @@ FINLCAD:
 LeeBit:
 		ld r20, r30, 4;					 r20 <- Puntero a MapaBits
 		ld r15, r30, 8;					 r15 <- NumBit
+		divu r16, r15, 8;				 r16 <- r15/8, esto nos dirá que byte es
+		addu r20, r20, r16;				 Apuntamos a el byte
+		mulu r16, r16, 8;
+		subu r17, r15, r16;				 r17 <- NumBit % 8, asi sacas la posición dentro del byte
 		
 
 
