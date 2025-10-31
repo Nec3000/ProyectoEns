@@ -60,6 +60,12 @@ FINLCAD:
         POP(r1)
         jmp(r1)
 
+LeeBit:
+		ld r20, r30, 4;					 r20 <- Puntero a MapaBits
+		ld r15, r30, 8;					 r15 <- NumBit
+		
+
+
 
 CoincidenCad:
         PUSH(r1)
@@ -117,7 +123,7 @@ FinBusca:
 ; ninguna de ellas, al final de su archivo CDV24.ens
 ;
 ; Este aviso se refiere tambi n a las l neas de comentario
-; 
+;
 ;
 ;; Grupo:    230340 - Thu Oct 23 10:57:22 CEST 2025
 
