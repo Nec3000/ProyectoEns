@@ -99,7 +99,7 @@ SigueBusca:
 		ld.bu r2, r12, r29;				 Cargamos el char apuntado para comprobarlo
 		cmp r7, r2, r14;				 Veo si el apuntado es C
 		bb1 eq, r7, FinBusca
-		
+
 		addu r29, r29, 1;				 Aumentamos desplazamiento
 		cmp r7, r12, r13;
 		bb1 eq, r7, NoEncontrado;			 Si he llegado al final, acabo
@@ -112,8 +112,18 @@ FinBusca:
 
 PoneBitA1:
 		PUSH(r1)
-		ld r20,r30,4
-		ld r15,r30,8
+		ld r20,r30,4; 					cargo a r20 la dirección de donde se encuentran los bytes 
+		ld r15,r30,8; 					cargo el entero al registro 15 
+		divu r16,r15,8; 				averiguo en cual byte se encuentra el bit
+		addu r20,r20,r16
+
+		addu r16,r16,1
+		mulu r16,r16,8
+		subu r16,r16,1
+		subu r17, r16,r15
+		set r20, r20, 1<r17>
+		POP(r1)
+		jmp(r1)
 		
 		
 
