@@ -63,10 +63,16 @@ FINLCAD:
 LeeBit:
 		ld r20, r30, 4;					 r20 <- Puntero a MapaBits
 		ld r15, r30, 8;					 r15 <- NumBit
+
 		divu r16, r15, 8;				 r16 <- r15/8, esto nos dirá que byte es
 		addu r20, r20, r16;				 Apuntamos a el byte
 		mulu r16, r16, 8;
+
 		subu r17, r15, r16;				 r17 <- NumBit % 8, asi sacas la posición dentro del byte
+		extu r29, r20, 1<r17>
+
+		POP(r1)
+		jmp(r1)
 		
 
 
@@ -122,16 +128,19 @@ FinBusca:
 
 PoneBitA1:
 		PUSH(r1)
-		ld r20,r30,4; 					cargo a r20 la dirección de donde se encuentran los bytes 
-		ld r15,r30,8; 					cargo el entero al registro 15 
+		ld r20,r30,4; 					cargo a r20 la dirección de donde se encuentran los bytes
+		ld r15,r30,8; 					cargo el entero al registro 15
+
 		divu r16,r15,8; 				averiguo en cual byte se encuentra el bit
 		addu r20,r20,r16
 
 		addu r16,r16,1
 		mulu r16,r16,8
 		subu r16,r16,1
+		
 		subu r17, r16,r15
 		set r20, r20, 1<r17>
+
 		POP(r1)
 		jmp(r1)
 		
