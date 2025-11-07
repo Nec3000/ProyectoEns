@@ -126,13 +126,6 @@ FinBusca:
 		POP(r1)
 		jmp(r1)
 
-Comprime:
-		jmp(r1)
-
-Descomprime:
-		jmp(r1)
-Verifica:
-		jmp(r1)
 PoneBitA1:
 		PUSH(r1)
 		ld r20,r30,4; 					cargo a r20 la dirección de donde se encuentran los bytes
@@ -146,7 +139,7 @@ PoneBitA1:
 		subu r16,r16,1
 		
 		subu r17, r16,r15
-		set r20, r20, 1<r17>
+		set r20, r20, 1<r17>; 			Pone 1 bit a 1 desde la posicion del registro 17 incluido
 
 		POP(r1)
 		jmp(r1)
