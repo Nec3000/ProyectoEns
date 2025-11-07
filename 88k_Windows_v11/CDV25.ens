@@ -49,6 +49,7 @@ LongCad:
         PUSH(r1);
         ld r12, r30, 4;                  r12 <- Puntero a la cadena
         or r29, r0, r0;                  Inicio el contador a cero
+
 SIGUELCAD:
         ld.bu r2, r12, r29;              Cargo elemento apuntado por r12, r2 <- mem(r12)
         cmp r7, r2, r0;                  Vemos si se acaba la lista
@@ -69,7 +70,12 @@ LeeBit:
 		mulu r16, r16, 8;
 
 		subu r17, r15, r16;				 r17 <- NumBit % 8, asi sacas la posición dentro del byte
-		extu r29, r20, 1<r17>
+		ld.bu r19, r20, r0
+		or r18, r0, r0
+		addu r18, r18,1
+		mak r18, r18, 0<5>
+		addu r18, r17, r18
+		extu r29, r19, r18
 
 		POP(r1)
 		jmp(r1)
