@@ -15,35 +15,6 @@ POP: MACRO(ra)
         addu r30,r30,4
      ENDMACRO
 
-		org 0
-		br ppal
-
-		org 0x8000
-C: 		data  "_"
-REF:    data    "AAAABBBBCCCCDDDDEEEE_Fin.__.\0"
-from: 	data 4
-to:		data 25
-
-		org 0x8400
-ppal: 	or r30, r0, 0x9000
-		or r31, r30, r30
-
-		or r11, r0, 0x5F ; igual a "_"
-		LEA (r10, REF)
-		or r12, r0, 4
-		or r13, r0, 25
-
-		PUSH (r13) ; to
-		PUSH (r12) ; from
-		PUSH (r10) ; REF
-		PUSH (r11) ; C
-
-		bsr BuscaCar
-ret:	addu r30, r30, 16
-
-		stop
-
-
 
 LongCad:
         PUSH(r1);
@@ -157,7 +128,8 @@ PoneBitA1:
 		
 		subu r17, r16,r15
 		addu r18,r17,r18
-		set r29, r19, r18
+		set r19, r19, r18
+		st r19, r20, r0
 
 		POP(r1)
 		jmp(r1)
@@ -262,4 +234,3 @@ finBM:
 	POP  (r1)
 	jmp  (r1)
 ;; Grupo:    230340
-
