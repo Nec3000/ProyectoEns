@@ -145,13 +145,19 @@ PoneBitA1:
 
 		divu r16,r15,8; 				averiguo en cual byte se encuentra el bit
 		addu r20,r20,r16
+		ld.bu r19, r20, r0
+		or r18,r0,r0
+		addu r18, r18, r0
+		mak r18, r18,0<5>
+
 
 		addu r16,r16,1
 		mulu r16,r16,8
 		subu r16,r16,1
 		
 		subu r17, r16,r15
-		set r20, r20, 1<r17>
+		addu r18,r17,r18
+		set r29, r19, r18
 
 		POP(r1)
 		jmp(r1)
