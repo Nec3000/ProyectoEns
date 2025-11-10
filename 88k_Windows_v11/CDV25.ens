@@ -147,7 +147,7 @@ PoneBitA1:
 		addu r20,r20,r16
 		ld.bu r19, r20, r0
 		or r18,r0,r0
-		addu r18, r18, r0
+		addu r18, r18, 1
 		mak r18, r18,0<5>
 
 
