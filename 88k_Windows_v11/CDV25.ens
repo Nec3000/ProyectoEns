@@ -83,23 +83,25 @@ FINCOINCAD:
 BuscaCar:
 		PUSH(r1);							NOTA TEMPORAL, REVISAR PORQUE NO HAY COMPROBACIÓN DE DATOS VÁLIDOS, ASUME QUE FROM <= TO.
 		ld r14, r30, 4;					 r14 <- c, el caracter a buscar
-		ld r20, r30, 8;					 r20 <- ref, puntero a inicio de la cadena
-		or r29, r0,r0;					 r4 <- Inicio contador de movimiento, porque quiero tener en cuenta cuanto me he movido
+		ld r20, r30, 8;					 r20 <- puntero a ref, es por dirección
 
 		ld r10, r30, 12;				 r10 <- from
 		ld r11, r30, 16;				 r11 <- to
+
+		or r29, r10,r0;					 r29 <- Inicio contador de movimiento ya en from, porque luego lo tendre que sumar
 
 		addu r12, r20, r10;				 r12 <- ref[from], apunta a donde tenemos que empezar a buscar
 		addu r13, r20, r11;				 r13 <- ref[to], apunta a la posición en la que paramos, esta no se mira, la ultima mirada es ref[to-1]
 
 SigueBusca:
-		ld.bu r2, r12, 0;				 Cargamos el char apuntado para comprobarlo
-		cmp r7, r2, r14;				 Veo si el apuntado es C
-		bb1 eq, r7, FinBusca
-
-		addu r29, r29, 1;				 Aumentamos contador
 		cmp r7, r12, r13;
 		bb1 eq, r7, NoEncontrado;		 Si he llegado al final, acabo
+
+		ld.bu r2, r12, 0;				 Cargamos el char apuntado para comprobarlo
+		cmp r7, r2, r14;				 Veo si el apuntado es C
+		bb1 eq, r7, FinBusca;
+
+		addu r29, r29, 1;				 Aumentamos contador
 		addu r12, r12, 1;
 		br SigueBusca;
 NoEncontrado:
