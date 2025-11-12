@@ -35,24 +35,26 @@ FINLCAD:
         jmp(r1)
 
 LeeBit:
-		ld r20, r30, 4;					 r20 <- Puntero a MapaBits
-		ld r15, r30, 8;					 r15 <- NumBit
-
-		divu r16, r15, 8;				 r16 <- r15/8, esto nos dirá que byte es
-		addu r20, r20, r16;				 Apuntamos a el byte
-		mulu r16, r16, 8;
-
-		subu r17, r15, r16;				 r17 <- NumBit % 8, asi sacas la posición dentro del byte
-		ld.bu r19, r20, r0
-		or r18, r0, r0
-		addu r18, r18,1
-		mak r18, r18, 0<5>
-		addu r18, r17, r18
-		extu r29, r19, r18
-
-		POP(r1)
 		jmp(r1)
-		
+
+
+; ld r20, r30, 4;					 r20 <- Puntero a MapaBits
+; ld r15, r30, 8;					 r15 <- NumBit
+;
+; divu r16, r15, 8;				 r16 <- r15/8, esto nos dirá que byte es
+; addu r20, r20, r16;				 Apuntamos a el byte
+; mulu r16, r16, 8;
+;
+; subu r17, r15, r16;				 r17 <- NumBit % 8, asi sacas la posición dentro del byte
+; ld.bu r19, r20, r0
+; or r18, r0, r0
+; addu r18, r18,1
+; mak r18, r18, 0<5>
+; addu r18, r17, r18
+; extu r29, r19, r18
+;
+; POP(r1)
+; jmp(r1)
 
 
 
@@ -91,13 +93,14 @@ BuscaCar:
 		addu r13, r20, r11;				 r13 <- ref[to], apunta a la posición en la que paramos, esta no se mira, la ultima mirada es ref[to-1]
 
 SigueBusca:
-		ld.bu r2, r12, r29;				 Cargamos el char apuntado para comprobarlo
+		ld.bu r2, r12, 0;				 Cargamos el char apuntado para comprobarlo
 		cmp r7, r2, r14;				 Veo si el apuntado es C
 		bb1 eq, r7, FinBusca
 
-		addu r29, r29, 1;				 Aumentamos desplazamiento
+		addu r29, r29, 1;				 Aumentamos contador
 		cmp r7, r12, r13;
-		bb1 eq, r7, NoEncontrado;			 Si he llegado al final, acabo
+		bb1 eq, r7, NoEncontrado;		 Si he llegado al final, acabo
+		addu r12, r12, 1;
 		br SigueBusca;
 NoEncontrado:
 		or r29, r11, r0
