@@ -45,7 +45,7 @@ LeeBit:
 
 		mulu r16, r16, 8;
 		subu r17, r15, r16;				 r17 <- NumBit % 8, asi sacas la posición dentro del byte
-		subu r17, r17, 7;				 Como está en orden mayor a menor, hay que invertirlo
+		xor r17, r17, 7;				 Como está en orden mayor a menor, hay que invertirlo
 		or r18, r0, 1;					 Iniciamos a 1 un registro para meterle el desplazamiento en el byte y la anchura
 
 		mak r18, r18, 0<5>;				 En r18 hay un 1 en la posición 5, anchura de la extracción
