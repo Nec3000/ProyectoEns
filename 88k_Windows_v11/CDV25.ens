@@ -35,28 +35,25 @@ FINLCAD:
         jmp(r1)
 
 LeeBit:
+		PUSH(r1)
+		ld r20, r30, 4;					 r20 <- Puntero a MapaBits
+		ld r15, r30, 8;					 r15 <- NumBit
+
+		divu r16, r15, 8;				 r16 <- r15/8, esto el byte dentro del mapa
+		addu r20, r20, r16;				 Apuntamos a el byte
+		ld.bu r19, r20, r0;				 r20 <- Cargamos el contenido del byte
+
+		mulu r16, r16, 8;
+		subu r17, r15, r16;				 r17 <- NumBit % 8, asi sacas la posición dentro del byte
+		subu r17, r17, 7;				 Como está en orden mayor a menor, hay que invertirlo
+		or r18, r0, 1;					 Iniciamos a 1 un registro para meterle el desplazamiento en el byte y la anchura
+
+		mak r18, r18, 0<5>;				 En r18 hay un 1 en la posición 5, anchura de la extracción
+		addu r18, r17, r18;				 Añado la posición del bit,como es un número entre 0 y , ocupa solo tres bits, no toca el bit 5 con el 1
+		extu r29, r19, r18;				 Extraemos el bit en r29 directamente
+
+		POP(r1)
 		jmp(r1)
-
-
-; ld r20, r30, 4;					 r20 <- Puntero a MapaBits
-; ld r15, r30, 8;					 r15 <- NumBit
-;
-; divu r16, r15, 8;				 r16 <- r15/8, esto nos dirá que byte es
-; addu r20, r20, r16;				 Apuntamos a el byte
-; mulu r16, r16, 8;
-;
-; subu r17, r15, r16;				 r17 <- NumBit % 8, asi sacas la posición dentro del byte
-; ld.bu r19, r20, r0
-; or r18, r0, r0
-; addu r18, r18,1
-; mak r18, r18, 0<5>
-; addu r18, r17, r18
-; extu r29, r19, r18
-;
-; POP(r1)
-; jmp(r1)
-
-
 
 CoincidenCad:
         PUSH(r1)
