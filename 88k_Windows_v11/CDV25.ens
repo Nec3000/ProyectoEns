@@ -14,7 +14,10 @@ POP: MACRO(ra)
         ld ra,r30,0
         addu r30,r30,4
      ENDMACRO
-
+CREAMP: MACRO()
+		PUSH(r1)
+		PUSH(r31)
+		or r31, r30, r30;				 Crea marco de pila
 	 org 0x00000010
 
 
@@ -107,7 +110,24 @@ FinBusca:
 		POP(r1)
 		jmp(r1)
 Comprime:
-		jmp(r1)
+		CREAMP()
+		ld r20, r31,8;					 r20 <- *texto
+		PUSH(r20)
+		bsr LongCad
+		addu r30, r30 4
+		mulu r29, r29, 4;				 nº bytes texto comprimido(Como máximo)
+		addu r29, r29, 12;				 Reservo espacio para desplazamiento en texto, en pilaZona3 y en el mapa de bits
+		subu r30,r30,r29;				 Reservo variable local
+
+		ld r20, r31, 8
+		st r20, r31, -4;				 r31-4 <- *Avance_texto
+		ld r20, r31, 12
+		st r20, r31, -8;				 r31-8 <- *Avance_texto_comprimido
+		st r0, r31, -12;				 r31-12 <- NumBit
+
+
+
+
 Descomprime:
 		jmp(r1)
 Verifica:
