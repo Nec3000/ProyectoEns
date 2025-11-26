@@ -37,6 +37,7 @@ FINLCAD:
         POP(r1)
         jmp(r1)
 
+
 LeeBit:
 		PUSH(r1)
 		ld r20, r30, 4;					 r20 <- Puntero a MapaBits
@@ -129,6 +130,12 @@ Comprime:
 
 
 Descomprime:
+		POP(r1)
+		ld r21, r30, 4; cargo el dato comprimido
+		ld r22, r30, 8; cargo la zona del descomprimido
+		or r29, r0,r0; contador del tamaño de la cadena descomprimida
+		
+
 		jmp(r1)
 Verifica:
 		jmp(r1)
