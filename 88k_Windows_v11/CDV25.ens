@@ -112,19 +112,28 @@ FinBusca:
 		jmp(r1)
 Comprime:
 		CREAMP()
-		ld r20, r31,8;					 r20 <- *texto
+		ld r20, r31, 8;					 r20 <- *texto
 		PUSH(r20)
 		bsr LongCad
-		addu r30, r30 4
+		addu r30, r30, 4;				 Limpio pila
 		mulu r29, r29, 4;				 nº bytes texto comprimido(Como máximo)
 		addu r29, r29, 12;				 Reservo espacio para desplazamiento en texto, en pilaZona3 y en el mapa de bits
-		subu r30,r30,r29;				 Reservo variable local
+		subu r30, r30, r29;				 Reservo variables local
 
-		ld r20, r31, 8
-		st r20, r31, -4;				 r31-4 <- *Avance_texto
-		ld r20, r31, 12
-		st r20, r31, -8;				 r31-8 <- *Avance_texto_comprimido
-		st r0, r31, -12;				 r31-12 <- NumBit
+		ld r20, r31, 8;
+		or r22, r30, r30;				 *pilaZona3
+
+		ld r2, r20, 0;					 Cargo los primeros 4 chars de texto
+		st r2, r22, 0;					 Los guardo
+		ld r2, r20, 4;					 Repito con los 4 siguientes
+		st r2, r22, 4;					 He copiado los 1x8 caracteres
+		addu r2, r0, 8;					 Como he leido 8 bytes, ese es mi desplazamiento
+		st r2, r31, -4;				     Nuevo puntero de texto
+		st r2, r31, -8;				     Nuevo puntero de pilaZona3
+		st r0, r31, -12;				 NumBit, ya estan todas las variables inicializadas
+
+		
+		
 
 
 
@@ -136,7 +145,7 @@ Descomprime:
 		or r29, r0,r0; contador del tamaño de la cadena descomprimida
 		
 
-		jmp(r1)
+n		jmp(r1)
 Verifica:
 		jmp(r1)
 
