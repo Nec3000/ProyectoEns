@@ -238,13 +238,11 @@ FinLlenado:
 
 
 Descomprime:
-		POP(r1)
-		ld r21, r30, 4; cargo el dato comprimido
-		ld r22, r30, 8; cargo la zona del descomprimido
-		or r29, r0,r0; contador del tamaño de la cadena descomprimida
+		CREAMP()
+		ld r2, r30, 4; 					Cargo el puntero donde se recibe el texto compreso
+		ld r3, r30, 8;					Creo el puntero a donde se almacenará el texto descompreso	
+		or r29, r0, r0; 				creo el valor de r29 a 0, que será donde devolverá el temaño del texto
 		
-
-n		jmp(r1)
 Verifica:
 		jmp(r1)
 
