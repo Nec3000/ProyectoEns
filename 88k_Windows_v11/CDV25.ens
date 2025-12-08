@@ -18,6 +18,7 @@ CREAMP: MACRO()
 		PUSH(r1)
 		PUSH(r31)
 		or r31, r30, r30;				 Crea marco de pila
+	 ENDMACRO
 	 org 0x00000010
 
 
@@ -114,7 +115,9 @@ Comprime:
 		CREAMP()
 		ld r20, r31, 8;					 r20 <- *texto
 		PUSH(r20)
+
 		bsr LongCad
+
 		addu r30, r30, 4;				 Limpio pila
 		mulu r29, r29, 4;				 nº bytes texto comprimido(Como máximo)
 		addu r29, r29, 12;				 Reservo espacio para desplazamiento en texto, en pilaZona3 y en el mapa de bits
@@ -128,9 +131,105 @@ Comprime:
 		ld r2, r20, 4;					 Repito con los 4 siguientes
 		st r2, r22, 4;					 He copiado los 1x8 caracteres
 		addu r2, r0, 8;					 Como he leido 8 bytes, ese es mi desplazamiento
+
 		st r2, r31, -4;				     Nuevo puntero de texto
 		st r2, r31, -8;				     Nuevo puntero de pilaZona3
 		st r0, r31, -12;				 NumBit, ya estan todas las variables inicializadas
+LLenado:
+		ld r20, r31, 8
+		ld r10, r31, -4
+		ld.bu r2, r20, r10
+		cmp r7,r2, r0;					 Vemos si hemos acabado texto
+		bb1 eq, r7, FinLlenado
+
+		ld r11, r31, -12
+		divu r12, r11, 8
+		mulu r12, r12, 8
+		subu r12, r11, r12;				 Preparamos el %8
+
+		cmp r7, r12, r0;				 Vemos si hay que inicializar
+		bb1 ne, r7, NoInicia
+		ld r22, r31, 12
+		addu r22, r22, 5;				 Me salto la cabecera
+		st.bu r0, r22, r11
+NoInicia:
+		or r23, r0, r0;					 Inicio un registro de salida
+		PUSH(r23)
+		PUSH(r10)
+		PUSH(r20)
+
+		bsr BuscaMax
+		
+		addu r30, r30, 8;				 Limpio *texto y el desplazamiento, porque en una instrucción es más rápido aunque luego tenga que recuperarlo
+		POP(r23)
+
+		ld r20, r31, 8
+		ld r10, r31, -4
+		ld r11, r31, -8;
+		ld r12, r31, -12;				 Preparo los desplazamientos antes para usarlos haya o no haya compresión
+
+		cmp r7, r29, 4
+		bb1 be, r7, Compr
+
+		ld r12, r31, -12;			 	 Este lo cargo aquí porque la llamada a PoneBitA1 se lo cargaría
+		ld.bu r2, r20, r10
+		st.bu r2, r30, r11
+
+		addu r10, r10, 1
+		addu r11, r11, 1
+		addu r12, r12, 1;				 Avanzamos los desplazamientos
+
+		st r10, r31, -4
+		st r11, r31, -8
+		st r12, r31, -12;				 Guardamos todo
+
+		br LLenado
+Compr:
+		st.h r23, r30, r11;				 Guardo la dir P, media palabra
+		addu r11, r11, 2
+		st.b r29, r30, r11;				 Guardo un byte con L
+		addu r11, r11, 1;				 Avanzo 3 el *pilaZona3
+		addu r10, r10, r29;				 Avanzo L el *texto
+		st r10, r31, -4
+		st r11, r31, -8
+
+
+		ld r22, r31, 12
+		addu r22, r31, 5
+
+		PUSH(r12)
+		PUSH(r22)
+
+		bsr PoneBitA1
+
+		addu r30, r30, 8
+		ld r12, r31, -12
+		addu r12, r12, 1;				 Avanzo NumBit
+		st r12, r31, -12
+
+		br LLenado
+FinLlenado:
+		ld r22, r31, 12;
+		ld r10, r31, -4;
+		st.h r10, r22, 0;
+		or r3, r0, 1;
+		st.b r3, r22, 2;
+		ld r12, r31, -12;
+		divu r12, r12, 8;
+		addu r12, r12, 13;				 8 para redondear arriba + 5
+		st.h r12, r22, 3;
+		
+
+
+
+
+
+
+
+		
+
+		
+
 
 		
 		
@@ -256,7 +355,7 @@ noLimBM:
 	ld   r12, r31, 16	; Dir(JJ)
 	st   r27, r12, r0	; actualiza P en *JJ
 	bb1 ge, r5, finBM	; Si coincidencia >= 255 termina
-contBM: 
+contBM:
 	addu r27, r27, 1	; Pasa al siguiente car cter
 	cmp  r5, r27, r11	; Es P>=max ?
 	bb1  hs, r5, finBM
