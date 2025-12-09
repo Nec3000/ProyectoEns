@@ -19,6 +19,11 @@ CREAMP: MACRO()
 		PUSH(r31)
 		or r31, r30, r30;				 Crea marco de pila
 	 ENDMACRO
+DESMP: MACRO()
+		or r30, r31, r31
+		POP(r31)
+		POP(r1)
+		jmp(r1)
 	 org 0x00000010
 
 
@@ -151,7 +156,7 @@ LLenado:
 		bb1 ne, r7, NoInicia
 		ld r22, r31, 12
 		addu r22, r22, 5;				 Me salto la cabecera
-		st.bu r0, r22, r11
+		st.b r0, r22, r11
 NoInicia:
 		or r23, r0, r0;					 Inicio un registro de salida
 		PUSH(r23)
@@ -169,7 +174,7 @@ NoInicia:
 		ld r12, r31, -12;				 Preparo los desplazamientos antes para usarlos haya o no haya compresión
 
 		cmp r7, r29, 4
-		bb1 be, r7, Compr
+		bb1 ge, r7, Compr
 
 		ld r12, r31, -12;			 	 Este lo cargo aquí porque la llamada a PoneBitA1 se lo cargaría
 		ld.bu r2, r20, r10
@@ -212,13 +217,30 @@ FinLlenado:
 		ld r22, r31, 12;
 		ld r10, r31, -4;
 		st.h r10, r22, 0;
-		or r3, r0, 1;
+
+		or r3, r0, 1;					 Creo un 1, que será M
 		st.b r3, r22, 2;
+
 		ld r12, r31, -12;
-		divu r12, r12, 8;
-		addu r12, r12, 13;				 8 para redondear arriba + 5
-		st.h r12, r22, 3;
-		
+		divu r29, r12, 8;
+		addu r29, r29, 13;				 8 para redondear arriba los bytes + 5
+		st.h r29, r22, 3;				 Guardamos 2 bytes
+		addu r22, r22, r29;				 *cmrpdo a final de mapa de bits
+		ld r11, r31, -8
+		addu r29, r29, r11;				 Valor de retorno ya listo, todos los byts de cmrpdo
+		or r4, r0, r0;
+Vaciado:
+		cmp r7, r4, r11
+		bb1 eq, r7, FinVaciado
+		ld.bu r2, r30, r4
+		st.b r2, r22, r4
+		addu r4, r4, 1
+		br Vaciado
+FinVaciado:
+		DESMP()
+
+
+
 
 
 
