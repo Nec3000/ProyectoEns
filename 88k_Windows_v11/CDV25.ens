@@ -222,46 +222,12 @@ FinLlenado:
 		st.b r3, r22, 2;
 
 		ld r12, r31, -12;
-<<<<<<< HEAD
-		divu r29, r12, 8;
-		addu r29, r29, 13;				 8 para redondear arriba los bytes + 5
-		st.h r29, r22, 3;				 Guardamos 2 bytes
-		addu r22, r22, r29;				 *cmrpdo a final de mapa de bits
-		ld r11, r31, -8
-		addu r29, r29, r11;				 Valor de retorno ya listo, todos los byts de cmrpdo
-		or r4, r0, r0;
-Vaciado:
-		cmp r7, r4, r11
-		bb1 eq, r7, FinVaciado
-		ld.bu r2, r30, r4
-		st.b r2, r22, r4
-		addu r4, r4, 1
-		br Vaciado
-FinVaciado:
-		DESMP()
-
-
-
-
-
-
-
-
-
-
-		
-
-=======
 		divu r12, r12, 8;
 		addu r12, r12, 13;				 8 para redondear arriba + 5
 		st.h r12, r22, 3;
 		
->>>>>>> e86ba84 (descomprime hasta antes de la descompresion xd)
 		
 
-
-		
-		
 
 
 
