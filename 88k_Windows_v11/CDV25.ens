@@ -213,7 +213,7 @@ FinLlenado:
 		ld r10, r31, -4;				 Desplazamiento texto
 		extu r11, r10, 8<8>
 		st.b r11, r22, 0;				 Guardo primer byte del tamaño de texto
-		st.h r10, r22, 1;				 Guardo segundo byte del tamaño de texto
+		st.b r10, r22, 1;				 Guardo segundo byte del tamaño de texto
 
 		or r3, r0, 1;					 Creo un 1, que será M
 		st.b r3, r22, 2;
@@ -253,13 +253,38 @@ FinVaciado:
 
 
 
+
 Descomprime:
-		PUSH(r1)
-		PUSH(r31)
-		or r31, r30, r30;
-		ld r2, r30, 4; 					Cargo el puntero donde se recibe el texto compreso
-		ld r3, r30, 8;					Creo el puntero a donde se almacenará el texto descompreso	
-		or r29, r0, r0; 				creo el valor de r29 a 0, que será donde devolverá el temaño del texto
+		CREAMP()
+		ld r21, r30, 8; 				* a comp
+		ld r22, r30, 12;				* a desc	
+		or r29, r0, r0; 				contador de la cadena
+		ld.b r4, r21, 2; 				valor de M bits a contar 
+		ld.b r5, r21, 3; 				parte baja del desplazamiento
+		ld.b r6, r21, 4;				parte alta del desplazamiento
+		mulu r6,r6,256; 				conversión
+		addu r5,r5,r6;					juntamos tamaño del desplazamiento a hacer
+		addu r23,r21,r5; 				* a donde se encuentra la zona de datos
+		mulu r4,r4,8; 					tamaño de bits a copiar
+		or r15, r0, r0; 				contador de caracteres iniciales
+SIGUE_BUCLE:
+		ld.b r6,r23,r15;
+		st.b r6, r22,r15;				basicamente un move del primer caracter (byte) a desc
+		addu r15, r15, 1; 				incrementamos el contador
+		addu r29, r29, 1;
+		cmp r7, r15, r4;
+		bb1 ne, r7, SIGUE_BUCLE; 		si no es igual a 8*m (osea copio los 8*m caractere) sigue en el bucle
+		addu r22, r22, r4;				avazamos el * a donde se encuentra después de haber copiado los caracteres
+		addu r23, r23, r4; 				actualizamos el puntero después de haber copiado los primeros caracteres
+		ld.b r8, r21, r0;				parte alta del desplazamiento
+		ld.b r9, r21, 1; 				parte alta del desplazamiento
+		mulu r9,r9,256;
+		addu r9,r9,r8; 					ahora tenemos en r9 el tamaño del texto original(para comparar con r29 y saber si está bien o mal)
+		addu r24, r21, 5;				* al mapa de bits
+		or r15, r0, r0; 				contador reciclado para numbit
+
+
+
 		
 Verifica:
 		jmp(r1)
