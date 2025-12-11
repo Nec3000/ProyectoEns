@@ -14,16 +14,6 @@ POP: MACRO(ra)
         ld ra,r30,0
         addu r30,r30,4
      ENDMACRO
-CREAMP: MACRO()
-		PUSH(r1)
-		PUSH(r31)
-		or r31, r30, r30;				 Crea marco de pila
-	 ENDMACRO
-DESMP: MACRO()
-		or r30, r31, r31
-		POP(r31)
-		POP(r1)
-		jmp(r1)
 	 org 0x00000010
 
 
@@ -117,7 +107,9 @@ FinBusca:
 		POP(r1)
 		jmp(r1)
 Comprime:
-		CREAMP()
+		PUSH(r1)
+		PUSH(r31)
+		or r31, r30, r30;
 		ld r20, r31, 8;					 r20 <- *texto
 		PUSH(r20)
 
@@ -147,16 +139,16 @@ LLenado:
 		cmp r7,r2, r0;					 Vemos si hemos acabado texto
 		bb1 eq, r7, FinLlenado
 
-		ld r11, r31, -12
-		divu r12, r11, 8
-		mulu r12, r12, 8
-		subu r12, r11, r12;				 Preparamos el %8
+		ld r12, r31, -12
+		divu r13, r12, 8
+		mulu r14, r13, 8
+		subu r12, r12, r14;				 Preparamos el %8
 
 		cmp r7, r12, r0;				 Vemos si hay que inicializar
 		bb1 ne, r7, NoInicia
 		ld r22, r31, 12
 		addu r22, r22, 5;				 Me salto la cabecera
-		st.b r0, r22, r11
+		st.b r0, r22, r13
 NoInicia:
 		or r23, r0, r0;					 Inicio un registro de salida
 		PUSH(r23)
@@ -178,7 +170,7 @@ NoInicia:
 
 		ld r12, r31, -12;			 	 Este lo cargo aquí porque la llamada a PoneBitA1 se lo cargaría
 		ld.bu r2, r20, r10
-		st.bu r2, r30, r11
+		st.b r2, r30, r11
 
 		addu r10, r10, 1
 		addu r11, r11, 1
@@ -190,7 +182,10 @@ NoInicia:
 
 		br LLenado
 Compr:
-		st.h r23, r30, r11;				 Guardo la dir P, media palabra
+		extu r24, r23, 8<8>;			 Segundo byte
+		st.b r24, r23, r11
+		addu r11, r11, 1
+		st.b r23, r30, r11;				 Guardo la dir P, media palabra
 		addu r11, r11, 2
 		st.b r29, r30, r11;				 Guardo un byte con L
 		addu r11, r11, 1;				 Avanzo 3 el *pilaZona3
@@ -207,24 +202,29 @@ Compr:
 
 		bsr PoneBitA1
 
-		addu r30, r30, 8
-		ld r12, r31, -12
+		addu r30, r30, 8;				 Limpio pila
+		ld r12, r31, -12;				 Numbit
 		addu r12, r12, 1;				 Avanzo NumBit
-		st r12, r31, -12
+		st r12, r31, -12;				 Guardo
 
 		br LLenado
 FinLlenado:
-		ld r22, r31, 12;
-		ld r10, r31, -4;
-		st.h r10, r22, 0;
+		ld r22, r31, 12;				 Numbit
+		ld r10, r31, -4;				 Desplazamiento texto
+		extu r11, r10, 8<8>
+		st.b r11, r22, 0;				 Guardo primer byte del tamaño de texto
+		st.h r10, r22, 1;				 Guardo segundo byte del tamaño de texto
 
 		or r3, r0, 1;					 Creo un 1, que será M
 		st.b r3, r22, 2;
 
 		ld r12, r31, -12;
-		divu r29, r12, 8;
-		addu r29, r29, 13;				 8 para redondear arriba los bytes + 5
-		st.h r29, r22, 3;				 Guardamos 2 bytes
+		addu r12, r12, 7;				 Redondeo
+		divu r29, r12, 8;				 Saco el numero de bytes de Mapa de bits
+		addu r29, r29, 5;				 + 5 de cabecera
+		extu r28, r29, 8<8>;
+		st.b r28, r22, 3;				 Guardo primer byte de el tamaño de cabecera + mapa de bits
+		st.b r29, r22, 4;				 El segundo
 		addu r22, r22, r29;				 *cmrpdo a final de mapa de bits
 		ld r11, r31, -8
 		addu r29, r29, r11;				 Valor de retorno ya listo, todos los byts de cmrpdo
@@ -237,16 +237,10 @@ Vaciado:
 		addu r4, r4, 1
 		br Vaciado
 FinVaciado:
-		DESMP()
-
-
-
-
-
-
-
-
-
+		or r30, r31, r31
+		POP(r31)
+		POP(r1)
+		jmp(r1)
 
 		
 
@@ -260,7 +254,9 @@ FinVaciado:
 
 
 Descomprime:
-		CREAMP()
+		PUSH(r1)
+		PUSH(r31)
+		or r31, r30, r30;
 		ld r2, r30, 4; 					Cargo el puntero donde se recibe el texto compreso
 		ld r3, r30, 8;					Creo el puntero a donde se almacenará el texto descompreso	
 		or r29, r0, r0; 				creo el valor de r29 a 0, que será donde devolverá el temaño del texto
