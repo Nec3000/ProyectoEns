@@ -248,14 +248,12 @@ FinVaciado:
 
 
 		
-		
-
-
-
 
 
 Descomprime:
-		CREAMP()
+		PUSH(r1)
+		PUSH(r31)
+		or r31, r30, r30; 				creo el marco de pila
 		ld r21, r30, 8; 				* a comp
 		ld r22, r30, 12;				* a desc	
 		or r29, r0, r0; 				contador de la cadena
@@ -282,11 +280,70 @@ SIGUE_BUCLE:
 		addu r9,r9,r8; 					ahora tenemos en r9 el tamaño del texto original(para comparar con r29 y saber si está bien o mal)
 		addu r24, r21, 5;				* al mapa de bits
 		or r15, r0, r0; 				contador reciclado para numbit
+BUCLE:
+		cmp r7, r29, r9; 				comparamos si tienen el mismo para saber si ha llegado al final de la cadena
+		bb1 ge, r7, FIN_DESC			controlo desbordamiento
+		PUSH(r9)
+		PUSH(r29)
+		PUSH(r22)
+		PUSH(r23)
+		PUSH(r15)
+		PUSH(r24)
+		bsr LeeBit;
+		addu r30, r30, 8
+		or r10, r29, r0
+		POP(r24)
+		POP(r15)
+		POP(r23)
+		POP(r22)
+		POP(r29)				
+		POP(r9);						recuperamos parametros
+		addu r15, r15, 1
+		cmp r7, r10, r0
+		bb1 eq, r7, Copia_Byte; 	
+		ld.b r5, r23, r0;				obtengo parte baja de la posicion/reciclo r5
+		ld.b r6, r23, 1; 				obtengo parte alta de la posicion/reciclo r6
+		mulu r6, r6, 256; 				conversion
+		addu r5, r5, r6; 				obtengo la posicion real
+		ld.b r8, r23, 2; 				obtengo el 3er byte que contiene la longitud de la referencia
+		ld r25, r30, 12; 				obtengo la zona de inicio de desc(*)
+		addu r25, r25, r5; 				voy a donde me mande la posición
+		or r3, r0, r0; 					creo un contador
+BUCLE_UNO:
+		ld.b r2, r25, r3;
+		st.b r2, r22, r3;				copio y lo primero de desc y lo mando al final con el desplazamiento del contador(así mantengo actualizado el puntero de r22 y r25 indirectamente)
+		addu r3, r3, 1;					incremento contador
+		cmp r7, r3, r8;
+		bb1 ne, r7, BUCLE_UNO
+		addu r23, r23, 3; 				incremento en 3 los bytes que leyó
+		addu r22, r22, r3
+		addu r29, r29, r3
+		br BUCLE
+
+
+Copia_Byte:
+		ld.b r4,r23,r0;
+		st.b r4,r22,r0;					copio de r23 a r22(el bit a descomprime) el bit/reciclo r4
+		addu r23, r23, 1
+		addu r22, r22, 1; 				actualizamos el valor de los punteros
+		addu r29, r29, 1; 				actualizo contador de palabras
+		br BUCLE
+FIN_DESC:
+		st.b r0, r22, 0; 				añade el "\0" al final que es lo que pide
+		POP(r31)
+		POP(r1)
+		jmp(r1)
+
+
+		
+
+		
 
 
 
 		
 Verifica:
+
 		jmp(r1)
 
 PoneBitA1:
