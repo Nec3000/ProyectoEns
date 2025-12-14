@@ -265,7 +265,7 @@ Descomprime:
 		addu r23,r21,r5; 				* a donde se encuentra la zona de datos
 		mulu r4,r4,8; 					tamaño de bits a copiar
 		or r15, r0, r0; 				contador de caracteres iniciales
-SIGUE_BUCLE:
+SIGUEBUCLE:
 		ld.b r6,r23,r15;
 		st.b r6, r22,r15;				basicamente un move del primer caracter (byte) a desc
 		addu r15, r15, 1; 				incrementamos el contador
@@ -309,7 +309,7 @@ BUCLE:
 		ld r25, r30, 12; 				obtengo la zona de inicio de desc(*)
 		addu r25, r25, r5; 				voy a donde me mande la posición
 		or r3, r0, r0; 					creo un contador
-BUCLE_UNO:
+BUCLEUNO:
 		ld.b r2, r25, r3;
 		st.b r2, r22, r3;				copio y lo primero de desc y lo mando al final con el desplazamiento del contador(así mantengo actualizado el puntero de r22 y r25 indirectamente)
 		addu r3, r3, 1;					incremento contador
@@ -319,27 +319,18 @@ BUCLE_UNO:
 		addu r22, r22, r3
 		addu r29, r29, r3
 		br BUCLE
-
-
-Copia_Byte:
+CopiaByte:
 		ld.b r4,r23,r0;
 		st.b r4,r22,r0;					copio de r23 a r22(el bit a descomprime) el bit/reciclo r4
 		addu r23, r23, 1
 		addu r22, r22, 1; 				actualizamos el valor de los punteros
 		addu r29, r29, 1; 				actualizo contador de palabras
 		br BUCLE
-FIN_DESC:
+FINDESC:
 		st.b r0, r22, 0; 				añade el "\0" al final que es lo que pide
 		POP(r31)
 		POP(r1)
 		jmp(r1)
-
-
-		
-
-		
-
-
 
 		
 Verifica:
@@ -351,14 +342,14 @@ Verifica:
 		ld r22, r30, 16;				*long 2
 		or r15, r0, r0					contador LO	
 		or r23, r20, r0
-Bucle_pila:
+Buclepila:
 		ld.b r3, r23, r0;				leemos el primer byte(nuestro caso base es que sea "\0")
 		cmp r7, r3, r0;					si ha llegado a leer todo el texto finaliza, es decir r3="\0"
 		bb1 eq, r7, FIN_CALC
 		addu r15, r15, 1;				actualizamos el contador
 		addu r23,r23,1;					actualizamos puntero
 		br Bucle_pila
-FIN_CALC:
+FINCALC:
 		st r15, r21, r0;				almacenamos el tamaño del texto original(LO)
 		addu r16, r15, 5;				almacenamos el tamaño en bytes(cabecera+LO)
 		addu r8, r15, 7;
@@ -403,17 +394,17 @@ FIN_CALC:
 		ld r5, r22, r0;					obtenemos el valor de long 1
 		cmp r7, r29, r5;				si son iguales en tamaño entonces son iguales según coincidencad
 		bb1 eq, r7, Es_igual
-Es_dif:
+Esdif:
 		subu r29, r0, 2;					almacena en r29 un -2
 		br Fin_Ver
-Es_menos:
+Esmenos:
 		subu r29, r0, 1;					almacena en r29 un -1
 		br Fin_Ver
-Es_igual:
+Esigual:
 		or r29, r0, r0;						almacena en r29 un 0
 		br Fin_Ver
 
-Fin_ver:
+Finver:
 		or r30, r31, r31
 		POP(r31)
 		POP(r1)
