@@ -345,7 +345,7 @@ FIN_DESC:
 Verifica:
 		PUSH(r1)
 		PUSH(r31)
-		or r31, r30, 30; 				creo marco de pila
+		or r31, r30, r30; 				creo marco de pila
 		ld r20, r30, 8;					*texto
 		ld r21, r30, 12; 				*long 1
 		ld r22, r30, 16;				*long 2
@@ -353,17 +353,72 @@ Verifica:
 		or r23, r20, r0
 Bucle_pila:
 		ld.b r3, r23, r0;				leemos el primer byte(nuestro caso base es que sea "\0")
-		cmp r7, r3, r0
+		cmp r7, r3, r0;					si ha llegado a leer todo el texto finaliza, es decir r3="\0"
 		bb1 eq, r7, FIN_CALC
 		addu r15, r15, 1;				actualizamos el contador
 		addu r23,r23,1;					actualizamos puntero
 		br Bucle_pila
 FIN_CALC:
+		st r15, r21, r0;				almacenamos el tamaño del texto original(LO)
+		addu r16, r15, 5;				almacenamos el tamaño en bytes(cabecera+LO)
+		addu r8, r15, 7;
+		divu r8, r8, 8
+		subu r8, r8, 1;					aquí ya tenemos el tamaño del mapa de bits
+		addu r8, r8, r16;				tamaño en caso peor para pilacom
+		addu r9, r15, 1;				espacio para pilades
+		addu r8, r8, 3;
+		and r8, r8, 0xFFFC;				espacio alineado a palabra de pilacom
+		addu r9, r9, 3
+		and r9, r9, 0xFFFC;				espacio alineado a palabra de pilades
+		subu r30, r30, r9; 				espacio para pilades
+		or r25, r30, r0;				direccion donde empieza pilades
+		subu r30, r30, r8;				espacio pilacom
+		or r26, r30, r0;				direccion donde empieza pilacom
+		PUSH(r25);						pongo en pila la direccion de pilades
+		PUSH(r26);						pongo en pila la direccion de pilacom
+		PUSH(r26);						pilacom
+		PUSH(r20); 						pongo el texto en la pila
+		bsr Comprime
+		addu r30, r30, 8;				bajo el sp
+		POP(r26)
+		POP(r25)
+		PUSH(r25)
+		PUSH(r25)
+		PUSH(r26)
+		bsr Descomprime
+		addu r30, r30, 8;				bajo sp
+		POP(r25)
+		ld r23, r31, 16;				obtengo *long2
+		st r29, r23, r0;				almaceno en *long2
+		ld r21, r31, 12;				volvemos a obtener *long 1
+		ld r5, r21, r0;					obtenemos el valor de long 1
+		cmp r7, r29, r5;				comparamos si son iguales
+		bb1 ne, r7, Es_menos
+		ld r21, r31, 8;					volvemos a obtener el texto original
+		PUSH(r25)
+		PUSH(r21)
+		bsr CoincidenCad
+		addu r30, r30, 8;				bajo sp 
+		ld r22, r31, 12;				volvemos a obtener *long 1
+		ld r5, r22, r0;					obtenemos el valor de long 1
+		cmp r7, r29, r5;				si son iguales en tamaño entonces son iguales según coincidencad
+		bb1 eq, r7, Es_igual
+Es_dif:
+		subu r29, r0, 2;					almacena en r29 un -2
+		br Fin_Ver
+Es_menos:
+		subu r29, r0, 1;					almacena en r29 un -1
+		br Fin_Ver
+Es_igual:
+		or r29, r0, r0;						almacena en r29 un 0
+		br Fin_Ver
 
-
-
-
+Fin_ver:
+		or r30, r31, r31
+		POP(r31)
+		POP(r1)
 		jmp(r1)
+
 
 PoneBitA1:
 		PUSH(r1)
