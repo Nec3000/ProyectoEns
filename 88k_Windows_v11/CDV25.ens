@@ -343,6 +343,25 @@ FIN_DESC:
 
 		
 Verifica:
+		PUSH(r1)
+		PUSH(r31)
+		or r31, r30, 30; 				creo marco de pila
+		ld r20, r30, 8;					*texto
+		ld r21, r30, 12; 				*long 1
+		ld r22, r30, 16;				*long 2
+		or r15, r0, r0					contador LO	
+		or r23, r20, r0
+Bucle_pila:
+		ld.b r3, r23, r0;				leemos el primer byte(nuestro caso base es que sea "\0")
+		cmp r7, r3, r0
+		bb1 eq, r7, FIN_CALC
+		addu r15, r15, 1;				actualizamos el contador
+		addu r23,r23,1;					actualizamos puntero
+		br Bucle_pila
+FIN_CALC:
+
+
+
 
 		jmp(r1)
 
