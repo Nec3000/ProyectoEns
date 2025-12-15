@@ -186,8 +186,10 @@ Compr:
 		st.b r24, r23, r11
 		addu r11, r11, 1
 		st.b r23, r30, r11;				 Guardo la dir P, media palabra
+
 		addu r11, r11, 2
 		st.b r29, r30, r11;				 Guardo un byte con L
+		
 		addu r11, r11, 1;				 Avanzo 3 el *pilaZona3
 		addu r10, r10, r29;				 Avanzo L el *texto
 		st r10, r31, -4
