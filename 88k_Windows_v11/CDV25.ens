@@ -292,6 +292,8 @@ BUCLE:
 		PUSH(r22)
 		PUSH(r23)
 		PUSH(r15)
+		PUSH(r24);						guardamos en pila los valores que requerimos de forma extra(r15,r24)
+		PUSH(r15)
 		PUSH(r24)
 		bsr LeeBit;
 		addu r30, r30, 8
