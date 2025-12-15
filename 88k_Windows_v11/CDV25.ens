@@ -116,21 +116,21 @@ Comprime:
 		bsr LongCad
 
 		addu r30, r30, 4;				 Limpio pila
-		mulu r29, r29, 4;				 nº bytes texto comprimido(Como máximo)
 		addu r29, r29, 12;				 Reservo espacio para desplazamiento en texto, en pilaZona3 y en el mapa de bits
 		subu r30, r30, r29;				 Reservo variables local
 
 		ld r20, r31, 8;
-		or r22, r30, r30;				 *pilaZona3
+		or r4, r0, r0
+Acaba_M:
+		cmp r7, r4, 8
+		bb1 eq, r7, Acaba_M
+		ld.bu r2, r20, r4
+		st.b r2, r30, r4
+		addu r4, r4, 1
+		br LLena_M
 
-		ld r2, r20, 0;					 Cargo los primeros 4 chars de texto
-		st r2, r22, 0;					 Los guardo
-		ld r2, r20, 4;					 Repito con los 4 siguientes
-		st r2, r22, 4;					 He copiado los 1x8 caracteres
-		addu r2, r0, 8;					 Como he leido 8 bytes, ese es mi desplazamiento
-
-		st r2, r31, -4;				     Nuevo puntero de texto
-		st r2, r31, -8;				     Nuevo puntero de pilaZona3
+		st r4, r31, -4;				     Nuevo desp de texto
+		st r4, r31, -8;				     Nuevo desp de pilaZona3
 		st r0, r31, -12;				 NumBit, ya estan todas las variables inicializadas
 LLenado:
 		ld r20, r31, 8
@@ -150,25 +150,27 @@ LLenado:
 		addu r22, r22, 5;				 Me salto la cabecera
 		st.b r0, r22, r13
 NoInicia:
-		or r23, r0, r0;					 Inicio un registro de salida
+		addu r30, r30, 4
+
+		addu r30, r30, 4;				 Creo una variable local donde ira el valor de JJ
+		or r23, r23, r30;				 En r23 meto el puntero que usara BuscaMax para meter JJ
 		PUSH(r23)
 		PUSH(r10)
 		PUSH(r20)
 
 		bsr BuscaMax
 		
-		addu r30, r30, 8;				 Limpio *texto y el desplazamiento, porque en una instrucción es más rápido aunque luego tenga que recuperarlo
+		addu r30, r30, 12;				 Limpio *texto,el desplazamiento y *JJ, el valor está en la siguiente, porque en una instrucción es más rápido aunque luego tenga que recuperarlo
 		POP(r23)
 
 		ld r20, r31, 8
 		ld r10, r31, -4
 		ld r11, r31, -8;
-		ld r12, r31, -12;				 Preparo los desplazamientos antes para usarlos haya o no haya compresión
+		ld r12, r31, -12;
 
-		cmp r7, r29, 4
+		cmp r7, r29, 0x04
 		bb1 ge, r7, Compr
 
-		ld r12, r31, -12;			 	 Este lo cargo aquí porque la llamada a PoneBitA1 se lo cargaría
 		ld.bu r2, r20, r10
 		st.b r2, r30, r11
 
@@ -187,7 +189,7 @@ Compr:
 		addu r11, r11, 1
 		st.b r23, r30, r11;				 Guardo la dir P, media palabra
 
-		addu r11, r11, 2
+		addu r11, r11, 1
 		st.b r29, r30, r11;				 Guardo un byte con L
 		
 		addu r11, r11, 1;				 Avanzo 3 el *pilaZona3
@@ -211,7 +213,7 @@ Compr:
 
 		br LLenado
 FinLlenado:
-		ld r22, r31, 12;				 Numbit
+		ld r22, r31, 12;				 *Comprimido
 		ld r10, r31, -4;				 Desplazamiento texto
 		extu r11, r10, 8<8>
 		st.b r11, r22, 0;				 Guardo primer byte del tamaño de texto
