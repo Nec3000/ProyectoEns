@@ -116,6 +116,8 @@ Comprime:
 		bsr LongCad
 
 		addu r30, r30, 4;				 Limpio pila
+		divu r29, r29, 4
+		mulu r29, r29, 4;				 Busco redondear hacia abajo modulo 4 para dar una direccion alineada a palabra
 		addu r29, r29, 12;				 Reservo espacio para desplazamiento en texto, en pilaZona3 y en el mapa de bits
 		subu r30, r30, r29;				 Reservo variables local
 
@@ -185,9 +187,9 @@ NoInicia:
 		br LLenado
 Compr:
 		extu r24, r23, 8<8>;			 Segundo byte
-		st.b r24, r23, r11
+		st.b r23, r30, r11
 		addu r11, r11, 1
-		st.b r23, r30, r11;				 Guardo la dir P, media palabra
+		st.b r24, r30, r11;				 Guardo la dir P, media palabra
 
 		addu r11, r11, 1
 		st.b r29, r30, r11;				 Guardo un byte con L
@@ -216,19 +218,19 @@ FinLlenado:
 		ld r22, r31, 12;				 *Comprimido
 		ld r10, r31, -4;				 Desplazamiento texto
 		extu r11, r10, 8<8>
-		st.b r11, r22, 0;				 Guardo primer byte del tamaño de texto
-		st.b r10, r22, 1;				 Guardo segundo byte del tamaño de texto
+		st.b r10, r22, 0;				 Guardo primer byte del tamaño de texto
+		st.b r11, r22, 1;				 Guardo segundo byte del tamaño de texto
 
 		or r3, r0, 1;					 Creo un 1, que será M
 		st.b r3, r22, 2;
 
 		ld r12, r31, -12;
-		addu r12, r12, 7;				 Redondeo
+		addu r12, r12, 7;				 Redondeo hacia arriba el númuero de bytes
 		divu r29, r12, 8;				 Saco el numero de bytes de Mapa de bits
 		addu r29, r29, 5;				 + 5 de cabecera
 		extu r28, r29, 8<8>;
-		st.b r28, r22, 3;				 Guardo primer byte de el tamaño de cabecera + mapa de bits
-		st.b r29, r22, 4;				 El segundo
+		st.b r29, r22, 3;				 Guardo primer byte de el tamaño de cabecera + mapa de bits
+		st.b r28, r22, 4;				 El segundo
 		addu r22, r22, r29;				 *cmrpdo a final de mapa de bits
 		ld r11, r31, -8
 		addu r29, r29, r11;				 Valor de retorno ya listo, todos los byts de cmrpdo
