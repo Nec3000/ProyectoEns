@@ -116,21 +116,21 @@ Comprime:
 		bsr LongCad
 
 		addu r30, r30, 4;				 Limpio pila
-		divu r29, r29, 4
-		mulu r29, r29, 4;				 Busco redondear hacia abajo modulo 4 para dar una direccion alineada a palabra
+		addu r29, r29, 3;				 Redondea hacia arriba
+		and r29, r29, 0xFFFC;			 Limpio los dos últimos bits
 		addu r29, r29, 12;				 Reservo espacio para desplazamiento en texto, en pilaZona3 y en el mapa de bits
 		subu r30, r30, r29;				 Reservo variables local
 
 		ld r20, r31, 8;
 		or r4, r0, r0
-Acaba_M:
+LLena_M:
 		cmp r7, r4, 8
 		bb1 eq, r7, Acaba_M
 		ld.bu r2, r20, r4
 		st.b r2, r30, r4
 		addu r4, r4, 1
 		br LLena_M
-
+Acaba_M:
 		st r4, r31, -4;				     Nuevo desp de texto
 		st r4, r31, -8;				     Nuevo desp de pilaZona3
 		st r0, r31, -12;				 NumBit, ya estan todas las variables inicializadas
@@ -152,10 +152,9 @@ LLenado:
 		addu r22, r22, 5;				 Me salto la cabecera
 		st.b r0, r22, r13
 NoInicia:
-		addu r30, r30, 4
-
-		addu r30, r30, 4;				 Creo una variable local donde ira el valor de JJ
-		or r23, r23, r30;				 En r23 meto el puntero que usara BuscaMax para meter JJ
+		subu r30, r30, 4;				 Creo una variable local donde ira el valor de JJ
+		or r23, r30, r30;				 En r23 meto el puntero que usara BuscaMax para meter JJ
+		
 		PUSH(r23)
 		PUSH(r10)
 		PUSH(r20)
@@ -201,7 +200,7 @@ Compr:
 
 
 		ld r22, r31, 12
-		addu r22, r31, 5
+		addu r22, r22, 5
 
 		PUSH(r12)
 		PUSH(r22)
@@ -228,10 +227,12 @@ FinLlenado:
 		addu r12, r12, 7;				 Redondeo hacia arriba el númuero de bytes
 		divu r29, r12, 8;				 Saco el numero de bytes de Mapa de bits
 		addu r29, r29, 5;				 + 5 de cabecera
+
 		extu r28, r29, 8<8>;
 		st.b r29, r22, 3;				 Guardo primer byte de el tamaño de cabecera + mapa de bits
 		st.b r28, r22, 4;				 El segundo
 		addu r22, r22, r29;				 *cmrpdo a final de mapa de bits
+		
 		ld r11, r31, -8
 		addu r29, r29, r11;				 Valor de retorno ya listo, todos los byts de cmrpdo
 		or r4, r0, r0;
