@@ -106,6 +106,9 @@ NoEncontrado:
 FinBusca:
 		POP(r1)
 		jmp(r1)
+
+
+
 Comprime:
 		PUSH(r1)
 		PUSH(r31)
@@ -264,16 +267,16 @@ Descomprime:
 		ld r21, r30, 8; 				* a comp
 		ld r22, r30, 12;				* a desc	
 		or r29, r0, r0; 				contador de la cadena
-		ld.b r4, r21, 2; 				valor de M bits a contar 
-		ld.b r5, r21, 3; 				parte baja del desplazamiento
-		ld.b r6, r21, 4;				parte alta del desplazamiento
+		ld.bu r4, r21, 2; 				valor de M bits a contar 
+		ld.bu r5, r21, 3; 				parte baja del desplazamiento
+		ld.bu r6, r21, 4;				parte alta del desplazamiento
 		mulu r6,r6,256; 				conversión
 		addu r5,r5,r6;					juntamos tamaño del desplazamiento a hacer
 		addu r23,r21,r5; 				* a donde se encuentra la zona de datos
 		mulu r4,r4,8; 					tamaño de bits a copiar
 		or r15, r0, r0; 				contador de caracteres iniciales
 SIGUE_BUCLE:
-		ld.b r6,r23,r15;
+		ld.bu r6,r23,r15;
 		st.b r6, r22,r15;				basicamente un move del primer caracter (byte) a desc
 		addu r15, r15, 1; 				incrementamos el contador
 		addu r29, r29, 1;
@@ -281,8 +284,8 @@ SIGUE_BUCLE:
 		bb1 ne, r7, SIGUE_BUCLE; 		si no es igual a 8*m (osea copio los 8*m caractere) sigue en el bucle
 		addu r22, r22, r4;				avazamos el * a donde se encuentra después de haber copiado los caracteres
 		addu r23, r23, r4; 				actualizamos el puntero después de haber copiado los primeros caracteres
-		ld.b r8, r21, r0;				parte alta del desplazamiento
-		ld.b r9, r21, 1; 				parte alta del desplazamiento
+		ld.bu r8, r21, r0;				parte alta del desplazamiento
+		ld.bu r9, r21, 1; 				parte alta del desplazamiento
 		mulu r9,r9,256;
 		addu r9,r9,r8; 					ahora tenemos en r9 el tamaño del texto original(para comparar con r29 y saber si está bien o mal)
 		addu r24, r21, 5;				* al mapa de bits
@@ -295,10 +298,8 @@ BUCLE:
 		PUSH(r22)
 		PUSH(r23)
 		PUSH(r15)
-		PUSH(r24);						guardamos en pila los valores que requerimos de forma extra(r15,r24)
-
+		PUSH(r24);						guardamos en pila los valores que requerimos
 		bsr LeeBit;
-		
 		or r10, r29, r0
 		POP(r24)
 		POP(r15)
@@ -309,16 +310,16 @@ BUCLE:
 		addu r15, r15, 1
 		cmp r7, r10, r0
 		bb1 eq, r7, Copia_Byte; 	
-		ld.b r5, r23, r0;				obtengo parte baja de la posicion/reciclo r5
-		ld.b r6, r23, 1; 				obtengo parte alta de la posicion/reciclo r6
+		ld.bu r5, r23, r0;				obtengo parte baja de la posicion/reciclo r5
+		ld.bu r6, r23, 1; 				obtengo parte alta de la posicion/reciclo r6
 		mulu r6, r6, 256; 				conversion
 		addu r5, r5, r6; 				obtengo la posicion real
-		ld.b r8, r23, 2; 				obtengo el 3er byte que contiene la longitud de la referencia
+		ld.bu r8, r23, 2; 				obtengo el 3er byte que contiene la longitud de la referencia
 		ld r25, r30, 12; 				obtengo la zona de inicio de desc(*)
 		addu r25, r25, r5; 				voy a donde me mande la posición
 		or r3, r0, r0; 					creo un contador
 BUCLE_UNO:
-		ld.b r2, r25, r3;
+		ld.bu r2, r25, r3;
 		st.b r2, r22, r3;				copio y lo primero de desc y lo mando al final con el desplazamiento del contador(así mantengo actualizado el puntero de r22 y r25 indirectamente)
 		addu r3, r3, 1;					incremento contador
 		cmp r7, r3, r8;
@@ -328,7 +329,7 @@ BUCLE_UNO:
 		addu r29, r29, r3
 		br BUCLE
 Copia_Byte:
-		ld.b r4,r23,r0;
+		ld.bu r4,r23,r0;
 		st.b r4,r22,r0;					copio de r23 a r22(el bit a descomprime) el bit/reciclo r4
 		addu r23, r23, 1
 		addu r22, r22, 1; 				actualizamos el valor de los punteros
@@ -381,7 +382,6 @@ FIN_CALC:
 		addu r30, r30, 8;				bajo el sp
 		POP(r26)
 		POP(r25)
-		PUSH(r25)
 		PUSH(r25)
 		PUSH(r26)
 		bsr Descomprime
