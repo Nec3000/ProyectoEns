@@ -106,6 +106,9 @@ NoEncontrado:
 FinBusca:
 		POP(r1)
 		jmp(r1)
+
+
+
 Comprime:
 		PUSH(r1)
 		PUSH(r31)
@@ -123,14 +126,14 @@ Comprime:
 
 		ld r20, r31, 8;
 		or r4, r0, r0
-Acaba_M:
+LLena_M:
 		cmp r7, r4, 8
 		bb1 eq, r7, Acaba_M
 		ld.bu r2, r20, r4
 		st.b r2, r30, r4
 		addu r4, r4, 1
 		br LLena_M
-
+Acaba_M:
 		st r4, r31, -4;				     Nuevo desp de texto
 		st r4, r31, -8;				     Nuevo desp de pilaZona3
 		st r0, r31, -12;				 NumBit, ya estan todas las variables inicializadas
