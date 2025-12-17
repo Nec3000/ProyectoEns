@@ -18,27 +18,6 @@ POP: MACRO(ra)
 
 
 
-PPAL11: LEA(r30,0x10000)
-	LEA(r2, Texto1)
-	LEA(r3, long1)
-	LEA(r4, long2)
-	PUSH(r4)
-	PUSH(r3)
-	PUSH(r2)
-	bsr Verifica
-	POP(r2)
-	POP(r3)
-	POP(r4)
-	stop
-
-
-	org 0x14FF4
-Texto1: data "0123456789\0"
-	org 0x15000
-long1: res 4
-	org 0x15004
-long2: res 4
-
 LongCad:
         PUSH(r1);
         ld r12, r30, 4;                  r12 <- Puntero a la cadena
@@ -411,7 +390,7 @@ FIN_CALC:
 		PUSH(r25)
 		PUSH(r26)
 		bsr Descomprime
-		addu r30, r30, 8;				bajo sp
+		addu r30, r30, 4;				bajo sp
 		POP(r25)
 		ld r23, r31, 16;				obtengo *long2
 		st r29, r23, r0;				almaceno en *long2
