@@ -14,7 +14,8 @@ POP: MACRO(ra)
         ld ra,r30,0
         addu r30,r30,4
      ENDMACRO
-	 org 0x00000010
+
+org 0x10
 
 
 LongCad:
