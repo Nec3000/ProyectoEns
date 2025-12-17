@@ -18,6 +18,7 @@ POP: MACRO(ra)
 org 0x10
 
 
+
 LongCad:
         PUSH(r1);
         ld r12, r30, 4;                  r12 <- Puntero a la cadena
@@ -375,18 +376,21 @@ FIN_CALC:
 		or r25, r30, r0;				direccion donde empieza pilades
 		subu r30, r30, r8;				espacio pilacom
 		or r26, r30, r0;				direccion donde empieza pilacom
+
 		PUSH(r25);						pongo en pila la direccion de pilades
 		PUSH(r26);						pongo en pila la direccion de pilacom
 		PUSH(r26);						pilacom
 		PUSH(r20); 						pongo el texto en la pila
+
 		bsr Comprime
+		
 		addu r30, r30, 8;				bajo el sp
 		POP(r26)
 		POP(r25)
 		PUSH(r25)
 		PUSH(r26)
 		bsr Descomprime
-		addu r30, r30, 8;				bajo sp
+		addu r30, r30, 4;				bajo sp
 		POP(r25)
 		ld r23, r31, 16;				obtengo *long2
 		st r29, r23, r0;				almaceno en *long2
