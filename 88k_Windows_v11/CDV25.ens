@@ -174,11 +174,11 @@ NoInicia:
 		ld r11, r31, -8;
 		ld r12, r31, -12;
 
-		cmp r7, r29, 0x04
-		bb1 ge, r7, Compr
+		cmp r7, r29, 0x04;				 Miro si cumple la longitud mínima
+		bb1 ge, r7, Compr;				 Si la cumple, comprimimos
 
 		ld.bu r2, r20, r10
-		st.b r2, r30, r11
+		st.b r2, r30, r11;				 Guardamos el caracter
 
 		addu r10, r10, 1
 		addu r11, r11, 1
